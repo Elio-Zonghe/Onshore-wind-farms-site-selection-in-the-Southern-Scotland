@@ -4,7 +4,7 @@ import os
 
 
 def file_path_cwd(file_path):
-    project_file_name = 'windFarmSelection'
+    project_file_name = 'Onshore-wind-farms-site-selection-in-the-Southern-Scotland'
 
     current_path = os.path.dirname(__file__)
     n = current_path.find(project_file_name)
@@ -35,6 +35,7 @@ slope = rasterio.open(file_path_cwd('resource/Elevation/slope.tif'))
 aspect = rasterio.open(file_path_cwd('resource/Elevation/aspect.tif'))
 land_use = rasterio.open(file_path_cwd('resource/LandUse/south_scotland_land_use.tif'))
 wind_speed = rasterio.open(file_path_cwd('resource/WindSpeed/south_scotland_wind_speed.tif'))
+
 
 if __name__ == '__main__':
     path = os.path.dirname(__file__)

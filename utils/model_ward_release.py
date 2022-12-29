@@ -19,7 +19,7 @@ from matplotlib import colors
 from matplotlib import cm
 
 from utils.geo_file_path import south_scotland, scotland_power_station, scotland_residence, conservation, wind_farm, \
-    temperature, precipitation, population, road, community_council, landscape
+    temperature, precipitation, population, road, community_council, landscape, file_path_cwd
 from utils.add_widget import add_north, add_scale_bar
 
 plt.rcParams['font.sans-serif'] = ['Arial Unicode MS']
@@ -31,11 +31,11 @@ STATIC_CRS = CRS('epsg:27700')
 
 GRID_NUM = 32
 
-wind_speed = gpd.read_file('../resource/RasterToVector/wind_speed_shp.shp')
-land_use = gpd.read_file('../resource/RasterToVector/land_use_shp.shp')
+wind_speed = gpd.read_file(file_path_cwd('resource/RasterToVector/wind_speed_shp.shp'))
+land_use = gpd.read_file(file_path_cwd('resource/RasterToVector/land_use_shp.shp'))
 
-# aspect = gpd.read_file('../resource/RasterToVector/aspect_shp.shp')
-slope = gpd.read_file('../resource/RasterToVector/slope_shp.shp')
+# aspect = gpd.read_file(file_path_cwd'/resource/RasterToVector/aspect_shp.shp'))
+slope = gpd.read_file(file_path_cwd('resource/RasterToVector/slope_shp.shp'))
 
 
 def generate_ward():
@@ -225,7 +225,7 @@ def gwr(y, x, coordinates):
     gwr_bw = gwr_selector.search(search_method='golden_section', criterion='AIC')
     # print('best gwr：', gwr_bw)
 
-    gwr_results = GWR(coordinates, g_y, g_x, bw=gwr_bw, fixed=False, kernel='gaussian', constant=True,
+    gwr_results = GWR(coordinates, g_y, g_x, bw=gwr_bw, fixed=False, kernel='bisquare', constant=True,
                       spherical=True).fit()
 
     return gwr_results
@@ -263,7 +263,7 @@ def merge_columns(merge_data_list, merge_data_column, merge_result=generate_ward
     return merge_result
 
 
-def model_ward(is_gwr_summary=False, is_plot_coefficient=False, method_list=['gwr']):
+def model_ward(is_summary=False, is_plot_coefficient=False):
     wind_farm_overlay_grid = get_ward_overlay_area('wind_farm', wind_farm)
 
     residence_grid = get_ward_contain_point('residence', scotland_residence)
@@ -296,11 +296,11 @@ def model_ward(is_gwr_summary=False, is_plot_coefficient=False, method_list=['gw
     # ols_result = ols(y, x, w_queen, name_y='wind_farm', name_x=merge_data_column)
     # print(ols_result.summary)
 
-    # gwr_result = gwr(y, x, coordinates)
-    # gwr_result.summary()
+    gwr_result = gwr(y, x, coordinates)
+    gwr_result.summary()
 
-    mgwr_result = mgwr(y, x, coordinates)
-    mgwr_result.summary()
+    # mgwr_result = mgwr(y, x, coordinates)
+    # mgwr_result.summary()
 
     # ml_lag_result = ml_lag(y, x, w_queen, name_y='wind_farm', name_x=merge_data_column)
     # print(ml_lag_result.summary)
@@ -317,23 +317,23 @@ def model_ward(is_gwr_summary=False, is_plot_coefficient=False, method_list=['gw
     # if is_gwr_summary:
     #     method_results.summary()
     #
-    if is_plot_coefficient:
-        cof_data_column = ['cof_wind_farm'] + [f'cof_{col}' for col in merge_data_column]
+    # if is_plot_coefficient:
+    #     cof_data_column = ['cof_wind_farm'] + [f'cof_{col}' for col in merge_data_column]
+    #
+    #     gwr_coefficient = pd.DataFrame(mgwr_result.params, columns=cof_data_column)
+    #     gwr_filter_t = pd.DataFrame(mgwr_result.filter_tvals())
+    #
+    #     x_data_geo = merge_result
+    #
+    #     x_data_geo = x_data_geo.join(gwr_coefficient)
+    #
+    #     plot_coefficient(x_data_geo, cof_data_column, gwr_filter_t)
 
-        gwr_coefficient = pd.DataFrame(mgwr_result.params, columns=cof_data_column)
-        gwr_filter_t = pd.DataFrame(mgwr_result.filter_tvals())
-
-        x_data_geo = merge_result
-
-        x_data_geo = x_data_geo.join(gwr_coefficient)
-
-        plot_coefficient(x_data_geo, cof_data_column, gwr_filter_t)
-
-    print('-=-=-=-=-=-=-=-=-gwr-ward-main-function-finished-=-=-=-=-=-=-=-=-')
+    print('-=-=-=-=-=-=-=-=-OLS-ward-main-function-finished-=-=-=-=-=-=-=-=-')
 
 
 if __name__ == '__main__':
     plot_ward_factors()
-    model_ward(is_gwr_summary=True, is_plot_coefficient=True, method_list=[])
+    model_ward(is_summary=True, is_plot_coefficient=True)
 
     plt.show()
