@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import geopandas as gpd
+from mgwr.sel_bw import Sel_BW
 from shapely.geometry import Polygon
 from pyproj import CRS
 
@@ -192,11 +193,11 @@ def moran():
 
 
 def gwr(coordinates, y, x):
-    # gwr_selector = Sel_BW(coordinates, y, x)
-    # gwr_bw = gwr_selector.search(search_method='golden_section', criterion='AICc')
-    # print('best gwr：', gwr_bw)
+    gwr_selector = Sel_BW(coordinates, y, x)
+    gwr_bw = gwr_selector.search(search_method='golden_section', criterion='AICc')
+    print('best gwr：', gwr_bw)
 
-    gwr_results = GWR(coordinates, y, x, bw=44, fixed=False, kernel='gaussian', constant=True, spherical=True).fit()
+    gwr_results = GWR(coordinates, y, x, bw=44, fixed=False, kernel='bisquare', constant=True, spherical=True).fit()
     gwr_results.summary()
 
 

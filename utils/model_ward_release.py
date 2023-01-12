@@ -296,11 +296,11 @@ def model_ward(is_summary=False, is_plot_coefficient=False):
     # ols_result = ols(y, x, w_queen, name_y='wind_farm', name_x=merge_data_column)
     # print(ols_result.summary)
 
-    gwr_result = gwr(y, x, coordinates)
-    gwr_result.summary()
+    # gwr_result = gwr(y, x, coordinates)
+    # gwr_result.summary()
 
-    # mgwr_result = mgwr(y, x, coordinates)
-    # mgwr_result.summary()
+    mgwr_result = mgwr(y, x, coordinates)
+    mgwr_result.summary()
 
     # ml_lag_result = ml_lag(y, x, w_queen, name_y='wind_farm', name_x=merge_data_column)
     # print(ml_lag_result.summary)
@@ -329,7 +329,7 @@ def model_ward(is_summary=False, is_plot_coefficient=False):
     #
     #     plot_coefficient(x_data_geo, cof_data_column, gwr_filter_t)
 
-    print('-=-=-=-=-=-=-=-=-OLS-ward-main-function-finished-=-=-=-=-=-=-=-=-')
+    print('-=-=-=-=-=-=-=-=-mgwr-ward-main-function-finished-=-=-=-=-=-=-=-=-')
 
 
 if __name__ == '__main__':
