@@ -225,7 +225,7 @@ def gwr(y, x, coordinates):
     gwr_bw = gwr_selector.search(search_method='golden_section', criterion='AIC')
     # print('best gwr：', gwr_bw)
 
-    gwr_results = GWR(coordinates, g_y, g_x, bw=gwr_bw, fixed=False, kernel='bisquare', constant=True,
+    gwr_results = GWR(coordinates, g_y, g_x, bw=gwr_bw, fixed=False, kernel='gaussian', constant=True,
                       spherical=True).fit()
 
     return gwr_results
@@ -237,7 +237,7 @@ def mgwr(y, x, coordinates):
 
     mgwr_selector = Sel_BW(coordinates, g_y, g_x, multi=True)
     mgwr_bw = mgwr_selector.search()
-    mgwr_results = MGWR(coordinates, g_y, g_x, selector=mgwr_selector).fit()  # 0.823
+    mgwr_results = MGWR(coordinates, g_y, g_x, selector=mgwr_selector, kernel='gaussian').fit()  # 0.823
 
     return mgwr_results
 
@@ -292,7 +292,7 @@ def model_ward(is_summary=False, is_plot_coefficient=False):
     x = merge_result[merge_data_column].values
     coordinates = list(zip(wind_farm_overlay_grid.centroid.x, wind_farm_overlay_grid.centroid.y))
     w_queen = weights.Queen.from_dataframe(community_council)
-
+    merge_result.to_csv('merge result.csv')
     # ols_result = ols(y, x, w_queen, name_y='wind_farm', name_x=merge_data_column)
     # print(ols_result.summary)
 
@@ -316,18 +316,18 @@ def model_ward(is_summary=False, is_plot_coefficient=False):
 
     # if is_gwr_summary:
     #     method_results.summary()
-    #
-    # if is_plot_coefficient:
-    #     cof_data_column = ['cof_wind_farm'] + [f'cof_{col}' for col in merge_data_column]
-    #
-    #     gwr_coefficient = pd.DataFrame(mgwr_result.params, columns=cof_data_column)
-    #     gwr_filter_t = pd.DataFrame(mgwr_result.filter_tvals())
-    #
-    #     x_data_geo = merge_result
-    #
-    #     x_data_geo = x_data_geo.join(gwr_coefficient)
-    #
-    #     plot_coefficient(x_data_geo, cof_data_column, gwr_filter_t)
+
+    if is_plot_coefficient:
+        cof_data_column = ['cof_wind_farm'] + [f'cof_{col}' for col in merge_data_column]
+
+        gwr_coefficient = pd.DataFrame(mgwr_result.params, columns=cof_data_column)
+        gwr_filter_t = pd.DataFrame(mgwr_result.filter_tvals())
+
+        x_data_geo = merge_result
+
+        x_data_geo = x_data_geo.join(gwr_coefficient)
+
+        plot_coefficient(x_data_geo, cof_data_column, gwr_filter_t)
 
     print('-=-=-=-=-=-=-=-=-mgwr-ward-main-function-finished-=-=-=-=-=-=-=-=-')
 

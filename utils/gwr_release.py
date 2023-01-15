@@ -197,7 +197,7 @@ def gwr(coordinates, y, x):
     gwr_bw = gwr_selector.search(search_method='golden_section', criterion='AICc')
     print('best gwr：', gwr_bw)
 
-    gwr_results = GWR(coordinates, y, x, bw=44, fixed=False, kernel='bisquare', constant=True, spherical=True).fit()
+    gwr_results = GWR(coordinates, y, x, bw=44, fixed=False, kernel='gaussian', constant=True, spherical=True).fit()
     gwr_results.summary()
 
 
