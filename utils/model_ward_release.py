@@ -413,7 +413,7 @@ def model_ward(is_summary=False, is_plot_coefficient=False):
     # Map coefficients
     fig, axes = plt.subplots(nrows=3, ncols=4, figsize=(12, 7), dpi=100)
     merge_result.plot(column='residence', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
-                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[0, 0])
+                  legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[0, 0])
     merge_result.plot(column='power_station', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
                       legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[0, 1])
     merge_result.plot(column='conservation', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
@@ -460,8 +460,6 @@ def model_ward(is_summary=False, is_plot_coefficient=False):
     axes[2, 0].set_title('(c) MGWR: landscape \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
     axes[2, 1].set_title('(c) MGWR: wind_speed\n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
     axes[2, 2].set_title('(c) MGWR:land_use \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
-
-    plt.show()
 
     # Monte Carlo test of spatial variability: 10 iterations
     mgwr_p_values_stationarity = mgwr_result.spatial_variability(mgwr_selector, 10)
