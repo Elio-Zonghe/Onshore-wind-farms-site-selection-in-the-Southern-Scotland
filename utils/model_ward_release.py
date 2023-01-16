@@ -34,7 +34,7 @@ GRID_NUM = 32
 wind_speed = gpd.read_file(file_path_cwd('resource/RasterToVector/wind_speed_shp.shp'))
 land_use = gpd.read_file(file_path_cwd('resource/RasterToVector/land_use_shp.shp'))
 
-# aspect = gpd.read_file(file_path_cwd'/resource/RasterToVector/aspect_shp.shp'))
+# aspect = gpd.read_file(file_path_cwd（'resource/RasterToVector/aspect_shp.shp')）
 slope = gpd.read_file(file_path_cwd('resource/RasterToVector/slope_shp.shp'))
 
 
@@ -280,11 +280,12 @@ def model_ward(is_summary=False, is_plot_coefficient=False):
     land_use_grid = get_ward_overlay_area('land_use', land_use[land_use['DN'] <= 10], value_column='DN')
 
     merge_data_list = [residence_grid, power_station_grid, conservation_overlay_grid, temperature_overlay_grid,
-                       precipitation_overlay_grid, population_overlay_grid, road_overlay_grid,
-                       slope_grid, landscape_grid, wind_speed_grid, land_use_grid]
+                       precipitation_overlay_grid, population_overlay_grid, road_overlay_grid, slope_grid,
+                       landscape_grid, wind_speed_grid, land_use_grid]
+
     merge_data_column = ['residence_result', 'power_station_result', 'conservation_result', 'temperature_result',
-                         'precipitation_result', 'population_result', 'road_result',
-                         'slope_result', 'landscape_result', 'wind_speed_result', 'land_use_result']
+                         'precipitation_result', 'population_result', 'road_result', 'slope_result', 'landscape_result',
+                         'wind_speed_result', 'land_use_result']
 
     merge_result = merge_columns(merge_data_list, merge_data_column)
 
@@ -292,16 +293,194 @@ def model_ward(is_summary=False, is_plot_coefficient=False):
     x = merge_result[merge_data_column].values
     coordinates = list(zip(wind_farm_overlay_grid.centroid.x, wind_farm_overlay_grid.centroid.y))
     w_queen = weights.Queen.from_dataframe(community_council)
-    merge_result.to_csv('merge result.csv')
+    # merge_result.('merge result.csv')
+
     # ols_result = ols(y, x, w_queen, name_y='wind_farm', name_x=merge_data_column)
     # print(ols_result.summary)
 
+    ## GWR analysis starts
     # gwr_result = gwr(y, x, coordinates)
+    # gwr_selector = Sel_BW(coordinates, y, x)
+    # gwr_bw = gwr_selector.search(search_method='golden_section', criterion='AIC')
     # gwr_result.summary()
+    #
+    # print('Mean R2 =', gwr_result.R2)
+    # print('AIC =', gwr_result.aic)
+    # print('AICc =', gwr_result.aicc)
+    #
+    # merge_result['gwr_R2'] = gwr_result.localR2
+    # fig, ax = plt.subplots(figsize=(6, 6))
+    # # add_north(ax=ax)
+    # merge_result.plot(column='gwr_R2', cmap='Greens', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+    #                   legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=ax)
+    # ax.set_title('Local R2', fontsize=12)
+    # # add_scale_bar(ax=ax, lon0=370000, lat0=535000)
+    # ax.axis("off")
+    # # add coefficient
+    # merge_result['residence'] = gwr_result.params[:, 0]
+    # merge_result['power_station'] = gwr_result.params[:, 1]
+    # merge_result['conservation'] = gwr_result.params[:, 2]
+    # merge_result['temperature'] = gwr_result.params[:, 3]
+    # merge_result['precipitation'] = gwr_result.params[:, 4]
+    # merge_result['population'] = gwr_result.params[:, 5]
+    # merge_result['road'] = gwr_result.params[:, 6]
+    # merge_result['slope'] = gwr_result.params[:, 7]
+    # merge_result['landscape'] = gwr_result.params[:, 8]
+    # merge_result['wind_speed'] = gwr_result.params[:, 9]
+    # merge_result['land_use'] = gwr_result.params[:, 10]
+    #
+    # # Filter t-values: standard alpha = 0.05
+    # gwr_filtered_t = gwr_result.filter_tvals(alpha=0.05)
+    # pd.DataFrame(gwr_filtered_t)
+    #
+    # # Filter t-values: corrected alpha due to multiple testing
+    # gwr_filtered_tc = gwr_result.filter_tvals()
+    #
+    # fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(18, 6))
+    # merge_result.plot(column='residence', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+    #                   legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[0])
+    # merge_result.plot(column='power_station', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+    #                   legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[1])
+    # merge_result.plot(column='residence', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+    #                   legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[2])
+    # # add_scale_bar(ax=ax[10], lon0=370000, lat0=535000)
+    # # merge_result.plot(column='residence', cmap='coolwarm', linewidth=0.05, scheme='FisherJenks', k=5, legend=False,
+    # #                   legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[1])
+    # # merge_result[gwr_filtered_t[:, 1] == 0].plot(color='white', linewidth=0.05, edgecolor='black', ax=axes[1])
+    # #
+    # # merge_result.plot(column='residence', cmap='coolwarm', linewidth=0.05, scheme='FisherJenks', k=5, legend=False,
+    # #                   legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[2])
+    # # merge_result[gwr_filtered_tc[:, 1] == 0].plot(color='white', linewidth=0.05, edgecolor='black', ax=axes[2])
+    #
+    # plt.tight_layout()
+    #
+    # axes[0].axis("off")
+    # axes[1].axis("off")
+    # axes[2].axis("off")
+    #
+    # axes[0].set_title('(a) GWR: residence (BW: ' + str(gwr_bw) + '), all coeffs', fontsize=12)
+    # axes[1].set_title('(b) GWR: power_station (BW: ' + str(gwr_bw) + '), all coeffs', fontsize=12)
+    # axes[2].set_title('(c) GWR: conservation (BW: ' + str(gwr_bw) + '), all coeffs', fontsize=12)
+    #
+    # # axes[1].set_title('(b) GWR: residence (BW: ' + str(gwr_bw) + '), significant coeffs', fontsize=12)
+    # # axes[2].set_title('(c) GWR: residence (BW: ' + str(gwr_bw) + '), significant coeffs and corr. p-values',fontsize=12)
+    # plt.show()
+    #
+    # LCC, VIF, CN, VDP = gwr_result.local_collinearity()
+    # pd.DataFrame(VIF)
+    # pd.DataFrame(VIF).describe().round(2)
+    # pd.DataFrame(CN)
+    # merge_result['gwr_CN'] = CN
+    # fig, ax = plt.subplots(figsize=(6, 6))
+    # merge_result.plot(column='gwr_CN', cmap='coolwarm', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+    #                   legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=ax)
+    # ax.set_title('Local multicollinearity (CN > 30)', fontsize=12)
+    # ax.axis("off")
+    # # plt.savefig('myMap.png',dpi=150, bbox_inches='tight')
+    # plt.show()
+
+    # MGWR analysis starts
 
     mgwr_result = mgwr(y, x, coordinates)
+    g_x = (x - x.mean(axis=0)) / x.std(axis=0)
+    g_y = (y - y.mean(axis=0)) / y.std(axis=0)
+    mgwr_selector = Sel_BW(coordinates, g_y, g_x, multi=True)
+    mgwr_bw = mgwr_selector.search()
     mgwr_result.summary()
 
+    mgwr_bw_ci = mgwr_result.get_bws_intervals(mgwr_selector)
+    print(mgwr_bw_ci)
+
+    # Add MGWR parameters to GeoDataframe
+    merge_result['residence'] = mgwr_result.params[:, 0]
+    merge_result['power_station'] = mgwr_result.params[:, 1]
+    merge_result['conservation'] = mgwr_result.params[:, 2]
+    merge_result['temperature'] = mgwr_result.params[:, 3]
+    merge_result['precipitation'] = mgwr_result.params[:, 4]
+    merge_result['population'] = mgwr_result.params[:, 5]
+    merge_result['road'] = mgwr_result.params[:, 6]
+    merge_result['slope'] = mgwr_result.params[:, 7]
+    merge_result['landscape'] = mgwr_result.params[:, 8]
+    merge_result['wind_speed'] = mgwr_result.params[:, 9]
+    merge_result['land_use'] = mgwr_result.params[:, 10]
+
+    # Filter t-values: standard alpha = 0.05
+    mgwr_filtered_t = mgwr_result.filter_tvals(alpha=0.05)
+
+    # Filter t-values: corrected alpha due to multiple testing
+    mgwr_filtered_tc = mgwr_result.filter_tvals()
+
+    # Map coefficients
+    fig, axes = plt.subplots(nrows=3, ncols=4, figsize=(12, 7), dpi=100)
+    merge_result.plot(column='residence', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[0, 0])
+    merge_result.plot(column='power_station', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[0, 1])
+    merge_result.plot(column='conservation', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[0, 2])
+    merge_result.plot(column='temperature', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[0, 3])
+    merge_result.plot(column='precipitation', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[1, 0])
+    merge_result.plot(column='population', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[1, 1])
+    merge_result.plot(column='road', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[1, 2])
+    merge_result.plot(column='slope', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[1, 3])
+    merge_result.plot(column='landscape', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[2, 0])
+    merge_result.plot(column='wind_speed', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[2, 1])
+    merge_result.plot(column='land_use', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=axes[2, 2])
+
+    plt.tight_layout()
+
+    axes[0, 0].axis("off")
+    axes[0, 1].axis("off")
+    axes[0, 2].axis("off")
+    axes[0, 3].axis("off")
+    axes[1, 0].axis("off")
+    axes[1, 1].axis("off")
+    axes[1, 2].axis("off")
+    axes[1, 3].axis("off")
+    axes[2, 0].axis("off")
+    axes[2, 1].axis("off")
+    axes[2, 2].axis("off")
+
+    axes[0, 0].set_title('(a) MGWR: residence \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+    axes[0, 1].set_title('(b) MGWR: power_station  \n  (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+    axes[0, 2].set_title('(c) MGWR: conservation  \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+    axes[0, 3].set_title('(c) MGWR: temperature \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+    axes[1, 0].set_title('(c) MGWR: precipitation \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+    axes[1, 1].set_title('(c) MGWR: population \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+    axes[1, 2].set_title('(c) MGWR: road \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+    axes[1, 3].set_title('(c) MGWR: slope\n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+    axes[2, 0].set_title('(c) MGWR: landscape \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+    axes[2, 1].set_title('(c) MGWR: wind_speed\n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+    axes[2, 2].set_title('(c) MGWR:land_use \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+
+    plt.show()
+
+    # Monte Carlo test of spatial variability: 10 iterations
+    mgwr_p_values_stationarity = mgwr_result.spatial_variability(mgwr_selector, 10)
+    mgwr_p_values_stationarity
+    # Note:  The first p-value is for the intercept
+
+    # Test local multi-collinearity
+    mgwrCN, mgwrVDP = mgwr_result.local_collinearity()
+    merge_result['mgwr_CN'] = mgwrCN
+    fig, ax = plt.subplots(figsize=(6, 6))
+    merge_result.plot(column='mgwr_CN', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
+                      legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=ax)
+    ax.set_title('Local multi-collinearity (CN > 30)', fontsize=12)
+    ax.axis("off")
+    # plt.savefig('myMap.png',dpi=150, bbox_inches='tight')
+    plt.show()
+
+    # plt.savefig('myMap.png',dpi=150, bbox_inches='tight')
+    # plt.show()
     # ml_lag_result = ml_lag(y, x, w_queen, name_y='wind_farm', name_x=merge_data_column)
     # print(ml_lag_result.summary)
     #
@@ -317,19 +496,19 @@ def model_ward(is_summary=False, is_plot_coefficient=False):
     # if is_gwr_summary:
     #     method_results.summary()
 
-    if is_plot_coefficient:
-        cof_data_column = ['cof_wind_farm'] + [f'cof_{col}' for col in merge_data_column]
+    # if is_plot_coefficient:
+    #     cof_data_column = ['cof_wind_farm'] + [f'cof_{col}' for col in merge_data_column]
+    #
+    #     gwr_coefficient = pd.DataFrame(mgwr_result.params, columns=cof_data_column)
+    #     gwr_filter_t = pd.DataFrame(mgwr_result.filter_tvals())
+    #
+    #     x_data_geo = merge_result
+    #
+    #     x_data_geo = x_data_geo.join(gwr_coefficient)
+    #
+    #     plot_coefficient(x_data_geo, cof_data_column, gwr_filter_t)
 
-        gwr_coefficient = pd.DataFrame(mgwr_result.params, columns=cof_data_column)
-        gwr_filter_t = pd.DataFrame(mgwr_result.filter_tvals())
-
-        x_data_geo = merge_result
-
-        x_data_geo = x_data_geo.join(gwr_coefficient)
-
-        plot_coefficient(x_data_geo, cof_data_column, gwr_filter_t)
-
-    print('-=-=-=-=-=-=-=-=-mgwr-ward-main-function-finished-=-=-=-=-=-=-=-=-')
+    print('-=-=-=-=-=-=-=-=- main-function-finished-=-=-=-=-=-=-=-=-')
 
 
 if __name__ == '__main__':
