@@ -449,22 +449,23 @@ def model_ward(is_summary=False, is_plot_coefficient=False):
     axes[2, 1].axis("off")
     axes[2, 2].axis("off")
 
-    axes[0, 0].set_title('(a) MGWR: residence \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
-    axes[0, 1].set_title('(b) MGWR: power_station  \n  (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
-    axes[0, 2].set_title('(c) MGWR: conservation  \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
-    axes[0, 3].set_title('(c) MGWR: temperature \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
-    axes[1, 0].set_title('(c) MGWR: precipitation \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
-    axes[1, 1].set_title('(c) MGWR: population \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
-    axes[1, 2].set_title('(c) MGWR: road \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
-    axes[1, 3].set_title('(c) MGWR: slope\n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
-    axes[2, 0].set_title('(c) MGWR: landscape \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
-    axes[2, 1].set_title('(c) MGWR: wind_speed\n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
-    axes[2, 2].set_title('(c) MGWR:land_use \n (BW: ' + str(mgwr_bw) + '), all coeffs', fontsize=12)
+    axes[0, 0].set_title('(a) MGWR: residence \n BW: ' + str(mgwr_bw), fontsize=16)
+    axes[0, 1].set_title('(b) MGWR: power_station  \n  BW: ' + str(mgwr_bw), fontsize=16)
+    axes[0, 2].set_title('(c) MGWR: conservation  \n BW: ' + str(mgwr_bw), fontsize=16)
+    axes[0, 3].set_title('(d) MGWR: temperature \n BW: ' + str(mgwr_bw), fontsize=16)
+    axes[1, 0].set_title('(e) MGWR: precipitation \n BW: ' + str(mgwr_bw), fontsize=16)
+    axes[1, 1].set_title('(f) MGWR: population \n BW: ' + str(mgwr_bw), fontsize=16)
+    axes[1, 2].set_title('(g) MGWR: road \n BW: ' + str(mgwr_bw), fontsize=16)
+    axes[1, 3].set_title('(h) MGWR: slope\n BW: ' + str(mgwr_bw), fontsize=16)
+    axes[2, 0].set_title('(i) MGWR: landscape \n BW: ' + str(mgwr_bw), fontsize=16)
+    axes[2, 1].set_title('(j) MGWR: wind_speed\n BW: ' + str(mgwr_bw), fontsize=16)
+    axes[2, 2].set_title('(k) MGWR:land_use \n BW: ' + str(mgwr_bw), fontsize=16)
 
     # Monte Carlo test of spatial variability: 10 iterations
     mgwr_p_values_stationarity = mgwr_result.spatial_variability(mgwr_selector, 10)
     mgwr_p_values_stationarity
     # Note:  The first p-value is for the intercept
+    plt.show()
 
     # Test local multi-collinearity
     mgwrCN, mgwrVDP = mgwr_result.local_collinearity()
@@ -472,7 +473,7 @@ def model_ward(is_summary=False, is_plot_coefficient=False):
     fig, ax = plt.subplots(figsize=(6, 6))
     merge_result.plot(column='mgwr_CN', cmap='GnBu', linewidth=0.01, scheme='FisherJenks', k=5, legend=True,
                       legend_kwds={'bbox_to_anchor': (1.10, 0.96)}, ax=ax)
-    ax.set_title('Local multi-collinearity (CN > 30)', fontsize=12)
+    ax.set_title('Local multi-collinearity (CN > 30)', fontsize=16)
     ax.axis("off")
     # plt.savefig('myMap.png',dpi=150, bbox_inches='tight')
     plt.show()
